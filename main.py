@@ -9,7 +9,7 @@ def run():
     # Параметры вывода
     WIDTH, HEIGHT = get_monitors()[0].width, get_monitors()[0].height
     FPS = 30
-    z = 17
+    z = 16
 
     # Задаем цвета
     bg_color = (0, 155, 155)
