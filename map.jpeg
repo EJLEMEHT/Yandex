@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<error><status>400</status><message>Wrong image size 1920, 1080. Size must be in range: 0 &lt; width &lt;= 650, 0 &lt; height &lt;= 450</message></error>
