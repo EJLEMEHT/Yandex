@@ -17,3 +17,8 @@ class MapView(pygame.sprite.Sprite):
     def draw(self):
         # Вывод карты
         self.screen.blit(self.image, self.rect)
+
+
+class Counter:
+    def __init__(self, z):
+        self.z = z
