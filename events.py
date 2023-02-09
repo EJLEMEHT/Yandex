@@ -11,12 +11,14 @@ def events(screen, maps, counter, coords):
 
         elif event.type == pygame.KEYDOWN:
             # Уменьшить
-            if event.key == pygame.K_DOWN:
-                counter.z -= 1
+            if event.key == pygame.K_PAGEDOWN:
+                if counter.z >= 6:
+                    counter.z -= 1
                 create_matrix(screen, maps, counter, coords)
             # Увеличить
-            elif event.key == pygame.K_UP:
-                counter.z += 1
+            elif event.key == pygame.K_PAGEUP:
+                if counter.z <= 19:
+                    counter.z += 1
                 create_matrix(screen, maps, counter, coords)
 
 
