@@ -1,5 +1,4 @@
 import pygame, requests, sys
-from random import *
 from math import ceil
 from mapview import MapView
 
