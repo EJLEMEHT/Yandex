@@ -20,8 +20,39 @@ class MapView(pg.sprite.Sprite):
             file.write(response.content)
         self.image = pg.image.load(f'images/map.png')
 
-    def search(self, name, loc):
-        self.loc = loc
+    # Поиск топонима/организации по нажатию на карту
+    def clicked_on_map(self, cords, find='org'):
+        address_ll = ','.join(cords)
+        if find == 'top':
+            geocoder_api_server = "http://geocode-maps.yandex.ru/1.x/"
+            geocoder_params = {
+                "apikey": "5b8c3077-c60d-4573-8990-122d645eddde",
+                "geocode": address_ll,
+                "format": "json"}
+            response = requests.get(geocoder_api_server, params=geocoder_params)
+            json_response = response.json()
+            toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
+            name = toponym["metaDataProperty"]["GeocoderMetaData"]['text']
+            self.search(name, self.loc, change_cords=False)
+        elif find == 'org':
+            search_api_server = "https://search-maps.yandex.ru/v1/"
+            search_params = {
+                "apikey": "f576937a-cfa6-471f-9a3e-c6da6a4e04fa",
+                "ll": address_ll,
+                "type": "biz",
+                "text": "аптека"}
+            response = requests.get(search_api_server, params=search_params)
+            response_json = response.json()
+            organization = response_json['features'][0]
+            point = [str(elem) for elem in organization['geometry']['coordinates']]
+            org_longt, org_latt = point[0], point[1]
+            toponym_longitude, toponym_lattitude = cords
+            if self.getDistanceBetweenPoints(float(org_latt), float(org_longt), float(toponym_lattitude),
+                                             float(toponym_longitude)) <= 50:
+                name = organization['properties']['CompanyMetaData']['name']
+                self.search(name, self.loc, change_cords=False)
+
+    def search(self, name, loc, change_cords=True):
         geocoder_api_server = "http://geocode-maps.yandex.ru/1.x/"
         geocoder_params = {
             "apikey": "5b8c3077-c60d-4573-8990-122d645eddde",
@@ -32,40 +63,23 @@ class MapView(pg.sprite.Sprite):
         toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
 
         loc.text = toponym["metaDataProperty"]["GeocoderMetaData"]['text']
-        self.postal_code = toponym["metaDataProperty"]["GeocoderMetaData"]['Address']['postal_code']
-        if loc.postal_code:
-            loc.text += ', Почтовый индекс: ' + toponym["metaDataProperty"]["GeocoderMetaData"]['Address']['postal_code']
+        if 'postal_code' in toponym["metaDataProperty"]["GeocoderMetaData"]['Address'].keys():
+            self.postal_code = toponym["metaDataProperty"]["GeocoderMetaData"]['Address']['postal_code']
+            if loc.postal_code:
+                loc.text += ', Почтовый индекс: ' + toponym["metaDataProperty"]["GeocoderMetaData"]['Address']['postal_code']
 
         cords = toponym["Point"]["pos"].split(' ')
         self.pt = f"{','.join(cords)},pm2dgl"
-        self.coords = tuple([float(elem) for elem in toponym["Point"]["pos"].split(' ')])
+        if change_cords:
+            self.coords = tuple([float(elem) for elem in toponym["Point"]["pos"].split(' ')])
         self.cords_to_img()
+        self.loc = loc
 
     def postal_code_update(self):
         if self.loc.postal_code and self.postal_code:
             self.loc.text += ', Почтовый индекс: ' + self.postal_code
-        else:
+        elif self.postal_code:
             self.loc.text = self.loc.text[:-25]
-
-
-    def search_org(self, cords, loc):
-        search_api_server = "https://search-maps.yandex.ru/v1/"
-        api_key = "f576937a-cfa6-471f-9a3e-c6da6a4e04fa"
-        address_ll = ','.join(cords.split())
-        search_params = {
-            "apikey": api_key,
-            "lang": "ru_RU",
-            "ll": address_ll,
-            "type": "biz"
-        }
-        response = requests.get(search_api_server, params=search_params)
-        response_json = response.json()
-        organization = response_json['features'][0]
-        point = [str(elem) for elem in organization['geometry']['coordinates']]
-        org_longt, org_latt = point[0], point[1]
-        toponym_longitude, toponym_lattitude = cords
-        if self.getDistanceBetweenPoints(float(org_latt), float(org_longt), float(toponym_lattitude), float(toponym_longitude)) < 50:
-            loc.text = organization['properties']['CompanyMetaData']['name']
 
     def getDistanceBetweenPoints(self, latitude1, longitude1, latitude2, longitude2):
         theta = longitude1 - longitude2
@@ -135,12 +149,12 @@ class MapView(pg.sprite.Sprite):
         if self.rect.collidepoint(mouse_pos):
             if pg.mouse.get_pressed(num_buttons=3)[0] or pg.mouse.get_pressed(num_buttons=3)[2]:
                 if not self.already_pressed:
+                    cords = [str(self.coords[0] + (mouse_pos[0] - self.rect.centerx) / 450 * 2 ** (8.91 + 17 - self.z) / (10 ** 5)),
+                    str(self.coords[1] + (self.rect.centery - mouse_pos[1]) / 450 * 2 ** (8 + 17 - self.z) / (10 ** 5))]
                     if pg.mouse.get_pressed(num_buttons=3)[0]:
-                        print('Левая кнопка мыши')
+                        self.clicked_on_map(cords, find='top')
                     else:
-                        print('Правая кнопка мыши')
-                    print(self.coords[0] + (mouse_pos[0] - self.rect.centerx) / 450 * 2 ** (8.91 + 17 - self.z) / (10 ** 5),
-                          self.coords[1] + (self.rect.centery - mouse_pos[1]) / 450 * 2 ** (8 + 17 - self.z) / (10 ** 5))
+                        self.clicked_on_map(cords, find='org')
                     self.already_pressed = True
             else:
                 self.already_pressed = False
