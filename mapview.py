@@ -1,10 +1,10 @@
-import pygame
+import pygame as pg
 import requests
 from location import Location
 from numpy import sin, cos, arccos, round, pi
 
 
-class MapView(pygame.sprite.Sprite):
+class MapView(pg.sprite.Sprite):
     # Получение карты
     def cords_to_img(self):
         coords = ','.join(map(str, self.coords))
@@ -18,7 +18,7 @@ class MapView(pygame.sprite.Sprite):
         # Обновление карты
         with open(map_file, 'wb') as file:
             file.write(response.content)
-        self.image = pygame.image.load(f'images/map.png')
+        self.image = pg.image.load(f'images/map.png')
 
     def search(self, name, loc):
         self.loc = loc
@@ -101,13 +101,13 @@ class MapView(pygame.sprite.Sprite):
         self.z = z
         self.coords = coords
         self.lay_type = 'map'
+        self.already_pressed = False
         # Подгрузка изображения
         self.cords_to_img()
         # Рабочая область карты
         self.rect = self.image.get_rect()
         self.rect.top = self.screen_rect.top
         self.rect.centerx = self.screen_rect.centerx
-        self.rect.size = self.screen_rect.size
 
     # Переключение на спутник
     def change_lay_sat(self):
@@ -129,9 +129,18 @@ class MapView(pygame.sprite.Sprite):
         self.pt = ''
         self.cords_to_img()
 
+    # Нахождение координат по клику
+    def process(self):
+        mouse_pos = pg.mouse.get_pos()
+        if self.rect.collidepoint(mouse_pos):
+            if pg.mouse.get_pressed(num_buttons=3)[0]:
+                if not self.already_pressed:
+                    print(self.coords[0] + (mouse_pos[0] - self.rect.centerx) / 450 * 2 ** (8.91 + 17 - self.z) / (10 ** 5),
+                          self.coords[1] + (self.rect.centery - mouse_pos[1]) / 450 * 2 ** (8 + 17 - self.z) / (10 ** 5))
+                    self.already_pressed = True
+            else:
+                self.already_pressed = False
+
     # Вывод карты
     def draw(self):
         self.screen.blit(self.image, self.rect)
-
-
-

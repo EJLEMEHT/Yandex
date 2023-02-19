@@ -70,6 +70,7 @@ def update(bg_color, screen, mapview, buttons, alerts, input_boxes, loc):
     # Обновление экрана
     screen.fill(bg_color)
     mapview.draw()
+    mapview.process()
     for button in buttons:
         button.process()
     for alert in alerts:
