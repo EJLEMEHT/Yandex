@@ -33,21 +33,27 @@ def run():
         InputBox(screen, 350, 300, 200, 50, '#ffffff', (150, 150, 150), font, func=mapview.search, loc=loc)
     ]
 
+    # Очистка метки и текста
     def clear_textpt():
         mapview.delete_pt()
         loc.text = ''
+
+    # Включить/выключить почтовый индекс
+    def enable_disable():
+        loc.enable_postal_code(buttons[5])
+
     # Кнопки
     buttons = [
         # Кнопки переключения слоёв
         Button(screen, 350, 25, 200, 50, font, 'Схема', mapview.change_lay_map),
         Button(screen, 350, 100, 200, 50, font, 'Спутник', mapview.change_lay_sat),
         Button(screen, 350, 175, 200, 50, font, 'Гибрид', mapview.change_lay_hybr),
-
         # Кнопка искать
         Button(screen, 350, 375, 200, 50, font, 'Искать', input_boxes[0].clear_input),
-
         # Сброс результатов
-        Button(screen, 1050, 25, 200, 50, font, 'Сброс', clear_textpt)
+        Button(screen, 1050, 25, 200, 50, font, 'Сброс', clear_textpt),
+        # Включить/Выключить приписку индекса
+        Button(screen, 1050, 100, 200, 50, font, 'Включить почтовый индекс', enable_disable)
     ]
 
     while True:

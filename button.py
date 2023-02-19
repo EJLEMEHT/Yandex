@@ -11,6 +11,7 @@ class Button:
         self.y = self.screen_rect.top + y
         self.width = width
         self.height = height
+        self.text = buttonText
         # Реакция на нажатие
         self.onclickFunction = onclickFunction
         self.onePress = onePress
@@ -25,7 +26,7 @@ class Button:
         self.buttonSurface = pg.Surface((self.width, self.height))
         self.buttonRect = pg.Rect(self.x, self.y, self.width, self.height)
 
-        self.buttonSurf = font.render(buttonText, True, (20, 20, 20))
+        self.buttonSurf = font.render(self.text, True, (20, 20, 20))
 
         self.alreadyPressed = False
 
