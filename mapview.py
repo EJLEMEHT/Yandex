@@ -33,14 +33,20 @@ class MapView(pg.sprite.Sprite):
             json_response = response.json()
             toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
             name = toponym["metaDataProperty"]["GeocoderMetaData"]['text']
-            self.search(name, self.loc, change_cords=False)
+            self.pt = f"{','.join(cords)},pm2dgl"
+            self.loc.text = name
+            self.cords_to_img()
         elif find == 'org':
             search_api_server = "https://search-maps.yandex.ru/v1/"
+            api_key = "f576937a-cfa6-471f-9a3e-c6da6a4e04fa"
+            address_ll = ','.join(cords)
             search_params = {
-                "apikey": "f576937a-cfa6-471f-9a3e-c6da6a4e04fa",
+                "apikey": api_key,
+                "text": address_ll,
+                "lang": "ru_RU",
                 "ll": address_ll,
-                "type": "biz",
-                "text": "аптека"}
+                "type": "biz"
+            }
             response = requests.get(search_api_server, params=search_params)
             response_json = response.json()
             organization = response_json['features'][0]
@@ -50,7 +56,9 @@ class MapView(pg.sprite.Sprite):
             if self.getDistanceBetweenPoints(float(org_latt), float(org_longt), float(toponym_lattitude),
                                              float(toponym_longitude)) <= 50:
                 name = organization['properties']['CompanyMetaData']['name']
-                self.search(name, self.loc, change_cords=False)
+                self.pt = f"{','.join(cords)},pm2dgl"
+                self.loc.text = name
+                self.cords_to_img()
 
     def search(self, name, loc, change_cords=True):
         geocoder_api_server = "http://geocode-maps.yandex.ru/1.x/"
