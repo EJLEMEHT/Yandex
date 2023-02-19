@@ -26,6 +26,7 @@ class Location:
         print(self.postal_code)
         button.buttonSurf = self.font.render(button.text, True, (20, 20, 20))
         button.screen.blit(button.buttonSurface, button.buttonRect)
+        self.update()
 
     def draw(self):
         self.screen.blit(self.message_img, self.message_rect)

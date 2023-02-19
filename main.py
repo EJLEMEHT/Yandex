@@ -22,10 +22,10 @@ def run():
     screen = pg.display.set_mode((width, height))
 
     # Передаваемые объекты
-    # Карта
-    mapview = MapView(screen, z, coords)
     # Адресс
     loc = Location(screen, '', font, '#ffffff')
+    # Карта
+    mapview = MapView(screen, z, coords, loc)
     # Сообщения
     alerts = []
     # Инпуты
@@ -38,9 +38,10 @@ def run():
         mapview.delete_pt()
         loc.text = ''
 
-    # Включить/выключить почтовый индекс
     def enable_disable():
         loc.enable_postal_code(buttons[5])
+        mapview.postal_code_update()
+        loc.update()
 
     # Кнопки
     buttons = [
