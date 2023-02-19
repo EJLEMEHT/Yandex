@@ -3,6 +3,7 @@ from mapview import MapView
 import controls
 from button import Button
 from inputs import InputBox
+from location import Location
 
 
 def run():
@@ -23,6 +24,8 @@ def run():
     # Передаваемые объекты
     # Карта
     mapview = MapView(screen, z, coords)
+    # Адресс
+    loc = Location(screen, '', font, '#ffffff')
     # Сообщения
     alerts = []
     # Инпуты
@@ -45,7 +48,7 @@ def run():
 
     while True:
         controls.events(mapview, screen, font, alerts, input_boxes)
-        controls.update(bg_color, screen, mapview, buttons, alerts, input_boxes)
+        controls.update(bg_color, screen, mapview, buttons, alerts, input_boxes, loc)
         pg.display.flip()
 
 

@@ -65,7 +65,7 @@ def events(mapview, screen, font, alerts, input_boxes):
             input_box.handle_event(event)
 
 
-def update(bg_color, screen, mapview, buttons, alerts, input_boxes):
+def update(bg_color, screen, mapview, buttons, alerts, input_boxes, loc):
     # Обновление экрана
     screen.fill(bg_color)
     mapview.draw()
@@ -80,3 +80,4 @@ def update(bg_color, screen, mapview, buttons, alerts, input_boxes):
     for input_box in input_boxes:
         input_box.update()
         input_box.draw()
+    loc.draw()
