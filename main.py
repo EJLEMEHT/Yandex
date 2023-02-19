@@ -8,7 +8,7 @@ from location import Location
 
 def run():
     # Параметры вывода
-    width, height = 1200, 450
+    width, height = 1200, 500
 
     # Начальные параметры
     bg_color = (64,  68, 75)
@@ -32,6 +32,10 @@ def run():
     input_boxes = [
         InputBox(screen, 350, 300, 200, 50, '#ffffff', (150, 150, 150), font, func=mapview.search, loc=loc)
     ]
+
+    def clear_textpt():
+        mapview.delete_pt()
+        loc.text = ''
     # Кнопки
     buttons = [
         # Кнопки переключения слоёв
@@ -43,7 +47,7 @@ def run():
         Button(screen, 350, 375, 200, 50, font, 'Искать', input_boxes[0].clear_input),
 
         # Сброс результатов
-        Button(screen, 1050, 25, 200, 50, font, 'Сброс', mapview.delete_pt)
+        Button(screen, 1050, 25, 200, 50, font, 'Сброс', clear_textpt)
     ]
 
     while True:

@@ -51,7 +51,7 @@ class MapView(pygame.sprite.Sprite):
         self.cords_to_img()
         # Рабочая область карты
         self.rect = self.image.get_rect()
-        self.rect.centery = self.screen_rect.centery
+        self.rect.top = self.screen_rect.top
         self.rect.centerx = self.screen_rect.centerx
         self.rect.size = self.screen_rect.size
 
