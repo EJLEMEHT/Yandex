@@ -37,7 +37,10 @@ def run():
         Button(screen, 350, 175, 200, 50, font, 'Гибрид', mapview.change_lay_hybr),
 
         # Кнопка искать
-        Button(screen, 350, 375, 200, 50, font, 'Искать', input_boxes[0].clear_input)
+        Button(screen, 350, 375, 200, 50, font, 'Искать', input_boxes[0].clear_input),
+
+        # Сброс результатов
+        Button(screen, 1050, 25, 200, 50, font, 'Сброс', mapview.delete_pt)
     ]
 
     while True:

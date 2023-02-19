@@ -63,8 +63,14 @@ class MapView(pygame.sprite.Sprite):
         self.lay_type = 'map'
         self.cords_to_img()
 
+    # Переключение на гибрид
     def change_lay_hybr(self):
         self.lay_type = 'sat,skl'
+        self.cords_to_img()
+
+    # Удаление метки
+    def delete_pt(self):
+        self.pt = ''
         self.cords_to_img()
 
     # Вывод карты
