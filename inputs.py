@@ -3,9 +3,10 @@ import pygame as pg
 
 class InputBox:
 
-    def __init__(self, screen, x, y, w, h, color_active, color_inactive, font, func=None, text=''):
+    def __init__(self, screen, x, y, w, h, color_active, color_inactive, font, func=None, loc=None, text=''):
         self.rect = pg.Rect(x, y, w, h)
         self.screen = screen
+        self.loc = loc
         self.func = func
         self.screen_rect = self.screen.get_rect()
         self.rect.x = self.screen_rect.right - x
@@ -19,7 +20,7 @@ class InputBox:
         self.active = False
 
     def clear_input(self):
-        self.func(self.text)
+        self.func(self.text, self.loc)
         self.text = ''
         self.txt_surface = self.font.render(self.text, True, self.color)
 

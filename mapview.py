@@ -1,5 +1,6 @@
 import pygame
 import requests
+from location import Location
 
 
 class MapView(pygame.sprite.Sprite):
@@ -18,7 +19,7 @@ class MapView(pygame.sprite.Sprite):
             file.write(response.content)
         self.image = pygame.image.load(f'images/map.png')
 
-    def search(self, name):
+    def search(self, name, loc):
         geocoder_api_server = "http://geocode-maps.yandex.ru/1.x/"
         geocoder_params = {
             "apikey": "5b8c3077-c60d-4573-8990-122d645eddde",
@@ -27,6 +28,7 @@ class MapView(pygame.sprite.Sprite):
         response = requests.get(geocoder_api_server, params=geocoder_params)
         json_response = response.json()
         toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
+        loc.text = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]["metaDataProperty"]["GeocoderMetaData"]['text']
         cords = toponym["Point"]["pos"].split(' ')
         self.pt = f"{','.join(cords)},pm2dgl"
         ret = tuple([float(elem) for elem in toponym["Point"]["pos"].split(' ')])

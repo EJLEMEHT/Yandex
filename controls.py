@@ -1,6 +1,7 @@
 import pygame as pg
 import sys
 from alerts import Alert
+from mapview import MapView
 
 
 def events(mapview, screen, font, alerts, input_boxes):
@@ -80,4 +81,5 @@ def update(bg_color, screen, mapview, buttons, alerts, input_boxes, loc):
     for input_box in input_boxes:
         input_box.update()
         input_box.draw()
+    loc.update()
     loc.draw()

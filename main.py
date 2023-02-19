@@ -30,7 +30,7 @@ def run():
     alerts = []
     # Инпуты
     input_boxes = [
-        InputBox(screen, 350, 300, 200, 50, '#ffffff', (150, 150, 150), font, mapview.search)
+        InputBox(screen, 350, 300, 200, 50, '#ffffff', (150, 150, 150), font, func=mapview.search, loc=loc)
     ]
     # Кнопки
     buttons = [
