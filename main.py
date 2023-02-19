@@ -2,11 +2,12 @@ import pygame as pg
 from mapview import MapView
 import controls
 from button import Button
+from inputs import InputBox
 
 
 def run():
     # Параметры вывода
-    width, height = 900, 450
+    width, height = 1200, 450
 
     # Начальные параметры
     bg_color = (64,  68, 75)
@@ -18,19 +19,30 @@ def run():
     pg.display.set_caption("Map")
     font = pg.font.SysFont('Arial', 16)
     screen = pg.display.set_mode((width, height))
-    mapview = MapView(screen, z, coords)
-    alerts = []
 
-    # Кнопки переключения слоёв
-    layer_buttons = [
-        Button(screen, 175, 25, 150, 50, font, 'Схема', mapview.change_lay_map),
-        Button(screen, 175, 100, 150, 50, font, 'Спутник', mapview.change_lay_sat),
-        Button(screen, 175, 175, 150, 50, font, 'Гибрид', mapview.change_lay_hybr)
+    # Передаваемые объекты
+    # Карта
+    mapview = MapView(screen, z, coords)
+    # Сообщения
+    alerts = []
+    # Инпуты
+    input_boxes = [
+        InputBox(screen, 350, 300, 200, 50, '#ffffff', (150, 150, 150), font, print)
+    ]
+    # Кнопки
+    buttons = [
+        # Кнопки переключения слоёв
+        Button(screen, 350, 25, 200, 50, font, 'Схема', mapview.change_lay_map),
+        Button(screen, 350, 100, 200, 50, font, 'Спутник', mapview.change_lay_sat),
+        Button(screen, 350, 175, 200, 50, font, 'Гибрид', mapview.change_lay_hybr),
+
+        # Кнопка искать
+        Button(screen, 350, 375, 200, 50, font, 'Искать', input_boxes[0].clear_input)
     ]
 
     while True:
-        controls.events(mapview, screen, font, alerts)
-        controls.update(bg_color, screen, mapview, layer_buttons, alerts)
+        controls.events(mapview, screen, font, alerts, input_boxes)
+        controls.update(bg_color, screen, mapview, buttons, alerts, input_boxes)
         pg.display.flip()
 
 

@@ -3,7 +3,7 @@ import sys
 from alerts import Alert
 
 
-def events(mapview, screen, font, alerts):
+def events(mapview, screen, font, alerts, input_boxes):
     # Обработка событий
     for event in pg.event.get():
 
@@ -61,13 +61,15 @@ def events(mapview, screen, font, alerts):
                     mapview.coords = (mapview.coords[0] - (2 ** (8.91 + 17 - mapview.z)) / (10 ** 5) + 360,
                                       mapview.coords[1])
                 mapview.cords_to_img()
+        for input_box in input_boxes:
+            input_box.handle_event(event)
 
 
-def update(bg_color, screen, mapview, layer_buttons, alerts):
+def update(bg_color, screen, mapview, buttons, alerts, input_boxes):
     # Обновление экрана
     screen.fill(bg_color)
     mapview.draw()
-    for button in layer_buttons:
+    for button in buttons:
         button.process()
     for alert in alerts:
         if alert.timer > 0:
@@ -75,3 +77,6 @@ def update(bg_color, screen, mapview, layer_buttons, alerts):
             alert.draw()
         else:
             alerts.pop(0)
+    for input_box in input_boxes:
+        input_box.update()
+        input_box.draw()
