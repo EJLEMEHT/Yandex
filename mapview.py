@@ -133,8 +133,12 @@ class MapView(pg.sprite.Sprite):
     def process(self):
         mouse_pos = pg.mouse.get_pos()
         if self.rect.collidepoint(mouse_pos):
-            if pg.mouse.get_pressed(num_buttons=3)[0]:
+            if pg.mouse.get_pressed(num_buttons=3)[0] or pg.mouse.get_pressed(num_buttons=3)[2]:
                 if not self.already_pressed:
+                    if pg.mouse.get_pressed(num_buttons=3)[0]:
+                        print('Левая кнопка мыши')
+                    else:
+                        print('Правая кнопка мыши')
                     print(self.coords[0] + (mouse_pos[0] - self.rect.centerx) / 450 * 2 ** (8.91 + 17 - self.z) / (10 ** 5),
                           self.coords[1] + (self.rect.centery - mouse_pos[1]) / 450 * 2 ** (8 + 17 - self.z) / (10 ** 5))
                     self.already_pressed = True
