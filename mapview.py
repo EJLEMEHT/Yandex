@@ -33,16 +33,21 @@ class MapView(pg.sprite.Sprite):
             json_response = response.json()
             toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
             name = toponym["metaDataProperty"]["GeocoderMetaData"]['text']
+            if 'postal_code' in toponym["metaDataProperty"]["GeocoderMetaData"]['Address']:
+                self.postal_code = toponym["metaDataProperty"]["GeocoderMetaData"]['Address']['postal_code']
+            else:
+                self.postal_code = ''
             self.pt = f"{','.join(cords)},pm2dgl"
             self.loc.text = name
             self.cords_to_img()
+            self.postal_code_update()
         elif find == 'org':
             search_api_server = "https://search-maps.yandex.ru/v1/"
             api_key = "f576937a-cfa6-471f-9a3e-c6da6a4e04fa"
             address_ll = ','.join(cords)
             search_params = {
                 "apikey": api_key,
-                "text": address_ll,
+                "text": "ТЦ",
                 "lang": "ru_RU",
                 "ll": address_ll,
                 "type": "biz"
@@ -56,9 +61,10 @@ class MapView(pg.sprite.Sprite):
             if self.getDistanceBetweenPoints(float(org_latt), float(org_longt), float(toponym_lattitude),
                                              float(toponym_longitude)) <= 50:
                 name = organization['properties']['CompanyMetaData']['name']
-                self.pt = f"{','.join(cords)},pm2dgl"
+                self.pt = f"{','.join([org_longt, org_latt])},pm2dgl"
                 self.loc.text = name
                 self.cords_to_img()
+                self.postal_code_update()
 
     def search(self, name, loc, change_cords=True):
         geocoder_api_server = "http://geocode-maps.yandex.ru/1.x/"
@@ -87,7 +93,8 @@ class MapView(pg.sprite.Sprite):
         if self.loc.postal_code and self.postal_code:
             self.loc.text += ', Почтовый индекс: ' + self.postal_code
         elif self.postal_code:
-            self.loc.text = self.loc.text[:-25]
+            if 'Почтовый индекс' in self.loc.text:
+                self.loc.text = self.loc.text[:-25]
 
     def getDistanceBetweenPoints(self, latitude1, longitude1, latitude2, longitude2):
         theta = longitude1 - longitude2
